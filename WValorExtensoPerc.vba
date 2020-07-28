@@ -7,7 +7,7 @@
 '*****************Código adaptado: Estevão (estevaogsr) 08/07/2020*****************'
 ''
 '*****************Notas de nova versão:*****************'
-'Escreve por extenso até trés casas decimais(milésimos)'
+'Escreve por extenso até quatro casas decimais(milésimos)'
 'Só escreve o sufixo inteiro quando é um numero decimal'
 'Distingue décimos de centésimos'
 
@@ -254,12 +254,17 @@ Private Function EscreveDecimosPerc(sCent As String) As String
 Dim sExtenso As String
 Dim iDivResto As Integer
 Dim iDivResto2 As Integer
+Dim iDivResto3 As Integer
+Dim iDivResto4 As Integer
 Dim iDivInteiro As Integer
 Dim iDivInteiro2 As Integer
+Dim iDivInteiro3 As Integer
+Dim iDivInteiro4 As Integer
 Dim sComplemento As String
 Dim vArrDez1 As Variant
 Dim vArrDez2 As Variant
 Dim vArrCen As Variant
+Dim vArrMilhar As Variant
 Dim iCent As Integer
 Dim iLenght As Integer
 
@@ -272,6 +277,9 @@ vArrDez2 = Array("vinte", "trinta", "quarenta", "cinquenta", "sessenta", _
 
 vArrCen = Array("cem", "cento", "duzentos", "trezentos", "quatrocentos", _
 "quinhentos", "seiscentos", "setecentos", "oitocentos", "novecentos")
+
+vArrMilhar = Array("um mil", "dois mil", "três mil", "quatro mil", _
+"cinco mil", "seis mil", "sete mil", "oito mil", "nove mil")
 
 'Separa os Decimais
 iLenght = Len(sCent)
@@ -306,6 +314,16 @@ ElseIf iLenght = 3 Then
     Else
     sComplemento = " milésimos"
     End If
+ElseIf iLenght = 4 Then
+    'Adequando para quatro casas decimais
+    iCent = Fix(sCent & String(4 - Len(sCent), "0"))
+    
+    'Escrevendo Singular ou plural
+    If iCent = 1 Then
+    sComplemento = " décimo de milésimo"
+    Else
+    sComplemento = " décimos de milésimo"
+    End If
 End If
 
 'Calculando os valores
@@ -327,9 +345,9 @@ Select Case iCent
         
         If iDivResto = 0 Then
             If iDivResto = 1 Then
-            sExtenso = vArrCen(0) 'cem
+                sExtenso = vArrCen(0) 'cem
             Else
-            sExtenso = vArrCen(iDivInteiro - 1) 'inteiro maior que 100
+                sExtenso = vArrCen(iDivInteiro - 1) 'inteiro maior que 100
             End If
         Else
             sExtenso = vArrCen(iDivInteiro) & " e " 'Concatena a centena com a dezena
@@ -339,11 +357,64 @@ Select Case iCent
                 Case 20 To 99
                     iDivInteiro2 = Fix(iDivResto / 10)
                     iDivResto2 = iDivResto Mod 10
-                If iDivResto2 = 0 Then
-                    sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2)
-                Else
-                    sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2) & " e " & vArrDez1(iDivResto2)
-                End If
+                    If iDivResto2 = 0 Then
+                        sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2)
+                    Else
+                        sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2) & " e " & vArrDez1(iDivResto2)
+                    End If
+            End Select
+        End If
+    Case 1000 To 9999
+        iDivInteiro = Fix(iCent / 1000)
+        iDivResto = iCent Mod 1000
+        
+        If iDivResto = 0 Then
+            If iDivResto = 1 Then
+                sExtenso = vArrMilhar(0) 'Um Mil
+            Else
+                sExtenso = vArrMilhar(iDivInteiro - 1) 'inteiro maior que 1000
+            End If
+        Else
+            sExtenso = vArrMilhar(iDivInteiro - 1) & " e " 'Concatena a centena com a centena, dezena ou unidade
+            Select Case iDivResto
+                Case 0 To 19
+                    sExtenso = sExtenso & vArrDez1(iDivResto)
+                Case 20 To 99
+                    iDivInteiro2 = Fix(iDivResto / 10)
+                    iDivResto2 = iDivResto Mod 10
+                    
+                    If iDivResto2 = 0 Then
+                        sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2)
+                    Else
+                        sExtenso = sExtenso & vArrDez2(iDivInteiro2 - 2) & " e " & vArrDez1(iDivResto2)
+                    End If
+                Case 100 To 999
+                    iDivInteiro3 = Fix(iDivResto / 100)
+                    iDivResto3 = iDivResto Mod 100
+                    
+                    If iDivResto3 = 0 Then
+                        If iDivResto3 = 1 Then
+                            sExtenso = sExtenso & vArrCen(0) 'cem
+                        Else
+                            sExtenso = sExtenso & vArrCen(iDivInteiro3 - 1) 'inteiro maior que 100
+                        End If
+                    Else
+                        sExtenso = sExtenso & vArrCen(iDivInteiro3) & " e " 'Concatena a centena com a dezena
+                        
+                        Select Case iDivResto3
+                            Case 0 To 19
+                               sExtenso = sExtenso & vArrDez1(iDivResto3)
+                            Case 20 To 99
+                                iDivInteiro4 = Fix(iDivResto3 / 10)
+                                iDivResto4 = iDivResto3 Mod 10
+                                If iDivResto4 = 0 Then
+                                    sExtenso = sExtenso & vArrDez2(iDivInteiro4 - 2)
+                                Else
+                                    sExtenso = sExtenso & vArrDez2(iDivInteiro4 - 2) & " e " & vArrDez1(iDivResto4)
+                                End If
+
+                        End Select
+                    End If
             End Select
         End If
 End Select
@@ -351,3 +422,4 @@ End Select
 EscreveDecimosPerc = IIf(iCent > 0, sExtenso & sComplemento, "")
 
 End Function
+
