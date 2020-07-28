@@ -10,6 +10,7 @@
 'Escreve por extenso até quatro casas decimais(milésimos)'
 'Só escreve o sufixo inteiro quando é um numero decimal'
 'Distingue décimos de centésimos'
+'O conector entre inteiro e decimal passa a ser o nome *vírgula* ex: (35,14) trinta e cinco inteiros vírgula quatorze.'
 
 Sub WValorExtensoPerc()
 
@@ -108,7 +109,7 @@ If Original = Int(Original) Then
     sTipoPlu = ""
     sTipoSing = ""
 Else
-    sTipoPlu = " inteiros"
+    sTipoPlu = ""
     sTipoSing = ""
 End If
 
@@ -119,7 +120,7 @@ sDecimos = EscreveDecimosPerc(sDecimais)
 
 'Adiciona os décimos e se é plural ou singular
 sExtensoFinal = IIf((sExtensoFinal = ""), "", sExtensoFinal & IIf((sExtensoFinal = "um"), sTipoSing, sTipoPlu)) _
-& IIf((sExtensoFinal = ""), sDecimos, IIf((sDecimos = ""), "", " e " & sDecimos))
+& IIf((sExtensoFinal = ""), sDecimos, IIf((sDecimos = ""), "", " vírgula " & sDecimos))
 
 'retorna o resultado
 
@@ -141,7 +142,7 @@ Dim vArrDez1 As Variant
 Dim vArrDez2 As Variant
 Dim vArrCentena As Variant
 
-vArrDez1 = Array("", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", _
+vArrDez1 = Array("zero", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", _
 "dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", _
 "dezoito", "dezenove")
 
@@ -268,7 +269,7 @@ Dim vArrMilhar As Variant
 Dim iCent As Integer
 Dim iLenght As Integer
 
-vArrDez1 = Array("", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", _
+vArrDez1 = Array("zero", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", _
 "dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", _
 "dezoito", "dezenove")
 
@@ -422,4 +423,6 @@ End Select
 EscreveDecimosPerc = IIf(iCent > 0, sExtenso & sComplemento, "")
 
 End Function
+
+
 
